@@ -101,11 +101,12 @@ estimable.default <- function (obj, cm, beta0, conf.int=NULL,
         }
       if (is.null(cm))
         cm <- diag(dim(cf)[1])
-      if (!dim(cm)[2]==dim(cf)[1])
-        stop(paste("\n Dimension of ", deparse(substitute(cm)),
-                   ": ", paste(dim(cm), collapse="x"),
-                   ", not compatible with no of parameters in ",
-                   deparse(substitute(obj)), ": ", dim(cf)[1], sep=""))
+      missing_coefs <- setdiff(rownames(cf), colnames(cm))
+      if (length(missing_coefs) > 0)
+        stop("\n Coefficients provided in ", deparse(substitute(cm)),
+             " do not contain the coefficients of ", deparse(substitute(obj)), " model",
+             ": ", paste(missing_coefs, collapse=" "))
+      cm <- cm[, colnames(cm) %in% rownames(cf), drop=FALSE]
       ct <- cm %*% cf[, 1]
       ct.diff <- cm %*% cf[, 1] - beta0
 
