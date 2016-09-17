@@ -11,13 +11,10 @@ estimable.default <- function (obj, cm, beta0, conf.int=NULL,
     {
       cm <- t(apply(cm, 1, .to.est, obj=obj))
     }
-  else if(is.list(cm))
+  else if(is.list(cm) || is.vector(cm))
     {
-      cm <- matrix(.to.est(obj, cm), nrow=1)
-    }
-  else if(is.vector(cm))
-    {
-      cm <- matrix(.to.est(obj, cm), nrow=1)
+      cm <- .to.est(obj, cm)
+      cm <- matrix(cm, nrow=1, dimnames = list(c(), names(cm)))
     }
   else
     {
